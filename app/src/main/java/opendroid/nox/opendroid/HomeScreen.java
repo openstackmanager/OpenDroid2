@@ -56,6 +56,10 @@ public class HomeScreen extends android.support.v4.app.FragmentActivity
             fragmentManager.beginTransaction()
                     .replace(R.id.container, FragmentVolumes.newInstance())
                     .commit();
+        }else if(position == 3) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, FragmentImages.newInstance())
+                    .commit();
         }
 
     }
@@ -70,6 +74,9 @@ public class HomeScreen extends android.support.v4.app.FragmentActivity
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
                 break;
         }
     }

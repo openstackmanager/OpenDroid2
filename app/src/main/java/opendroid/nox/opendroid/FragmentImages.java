@@ -1,59 +1,53 @@
 package opendroid.nox.opendroid;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.support.v4.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import opendroid.nox.opendroid.model.Instances;
-import opendroid.nox.opendroid.parsers.InstanceJSONParser;
+import opendroid.nox.opendroid.model.Images;
+import opendroid.nox.opendroid.parsers.ImageJSONParser;
 
 /**
- * Created by NOX on 16/04/2015.
+ * Created by Brian on 23/04/2015.
  */
-public class FragmentInstances extends Fragment{
+public class FragmentImages extends  Fragment{
+
+    public FragmentImages(){}
 
     TextView output;
     ProgressBar pb;
     List<MyTask> tasks;
 
-    List<Instances> instanceList;
+    List<Images> imageList;
 
-    public static FragmentInstances newInstance(){
-        FragmentInstances fragment = new FragmentInstances();
+    public static FragmentImages newInstance(){
+        FragmentImages fragment = new FragmentImages();
         return fragment;
     }
 
-    public FragmentInstances(){}
-
-    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_instances, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_images, container, false);
 
-        output = (TextView) rootView.findViewById(R.id.textView6);
+        output = (TextView) rootView.findViewById(R.id.textView7);
 
-        pb = (ProgressBar) rootView.findViewById(R.id.progressBarInstances);
+        pb = (ProgressBar) rootView.findViewById(R.id.progressBarImages);
         pb.setVisibility(View.INVISIBLE);
 
         tasks = new ArrayList<>();
         //Should pass in uri data from login activity, not hardcoded like below
         String tenantID = HttpManager.tenantId;
-        requestData("http://95.44.212.163:8774/v2/1f06575369474710959b62a0cb97b132/servers");
+        requestData("http://95.44.212.163:8774/v2/1f06575369474710959b62a0cb97b132/images");
         return rootView;
     }
 
@@ -61,7 +55,7 @@ public class FragmentInstances extends Fragment{
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        ((HomeScreen) activity).onSectionAttached(2);
+        ((HomeScreen) activity).onSectionAttached(4);
     }
 
     private void requestData(String uri) {
@@ -71,12 +65,12 @@ public class FragmentInstances extends Fragment{
 
     protected void updateDisplay() {
 
-        if (instanceList != null) {
-            for (Instances instance : instanceList) {
+        if (imageList != null) {
+            for (Images image : imageList) {
                 /**
                  * Populate the list view with instances
                  */
-                output.append(instance.getName() + "\n"+ instance.getId()+
+                output.append(image.getName() + "\n"+ image.getId()+
                         "\n");
 
             }
@@ -87,13 +81,13 @@ public class FragmentInstances extends Fragment{
     /**
      *
      protected boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-         } else {
-            return false;
-        }
+     ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+     NetworkInfo netInfo = cm.getActiveNetworkInfo();
+     if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+     return true;
+     } else {
+     return false;
+     }
      }
      *
      */
@@ -120,13 +114,13 @@ public class FragmentInstances extends Fragment{
         @Override
         protected void onPostExecute(String result) {
             //Passing result from doInBackgroung to InstanceJSONParser and getting an Instance list back
-            instanceList = InstanceJSONParser.parseFeed(result);
-            if (instanceList != null) {
-                for (Instances instance : instanceList) {
+            imageList = ImageJSONParser.parseFeed(result);
+            if (imageList != null) {
+                for (Images image : imageList) {
                     /**
                      * Populate the list view with instances
                      */
-                    Log.i("TAG", "result "+ instance.getName());
+                    Log.i("TAG", "result " + image.getName());
                 }
             }
             //call updateDisplay to populate listView
@@ -144,6 +138,5 @@ public class FragmentInstances extends Fragment{
         protected void onProgressUpdate(String... values) {
 
         }
-
     }
 }

@@ -10,13 +10,13 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="92dp"
-        android:id="@+id/progressBarInstances"
+        android:id="@+id/progressBarImages"
         android:paddingTop="40dp"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView6" />
+        android:id="@+id/textView7" />
 
 </LinearLayout>

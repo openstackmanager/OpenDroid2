@@ -20,6 +20,7 @@ import java.io.IOException;
 public class HttpManager {
     static String token = null;
     static  String tokenId = null;
+    static String tenantId = null;
     static String responseCode = null;
     //static AndroidHttpClient client = AndroidHttpClient.newInstance("AndroidAgent");
 
@@ -33,7 +34,11 @@ public class HttpManager {
 
         try {
             response = client.execute(request);
-            return EntityUtils.toString(response.getEntity());
+            HttpEntity entity = response.getEntity();
+            String re = EntityUtils.toString(entity);
+            Log.i("TAG", "Instance request :" + re);
+            return re;
+
         } catch (IOException e) {
             e.printStackTrace();
             return  "error"+ e;
@@ -84,34 +89,57 @@ public class HttpManager {
             //passing response to token String
             //token = EntityUtils.toString(entity);
             Log.i("TAG", "Token String value " + token);
-            tokenId = getToken(EntityUtils.toString(entity));//can only "consume" entity content once, will get error "Caused by: java.lang.IllegalStateException: Content has been consumed"
 
+            //Passing response to getToken method to extract the token ID
+            String tokenResponse= getToken(EntityUtils.toString(entity));//can only "consume" entity content once, will get error "Caused by: java.lang.IllegalStateException: Content has been consumed"
+            tokenId = tokenResponse;
+            tenantId = tokenResponse;
         } catch (IOException e) {
             e.printStackTrace();
             return  null;
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
-            Log.i("TAG", "Token ID String value " + tokenId);
+            Log.i("TAG", "Token ID String value(Login Method) " + tokenId);
             client.close();
             }
 
         return code = ""+r;
     }
-
+    //Method to extract the token ID
     public static String getToken(String t){
         JSONObject tokenId = null;
         String id = null;
         try {
             tokenId = new JSONObject(t);
+            //Getting the id string from the JSONObject and assigning it to the String id
             id = tokenId.getJSONObject("access").getJSONObject("token").getString("id").toString();
-            Log.i("TAG", "Token ID String value " + tokenId);
+            Log.i("TAG", "Token ID String value(getToken Method) " + id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return id;
     }
 
+    public static String getTenantId(String token){
+        JSONObject tokenId = null;
+        String id = null;
+        try {
+            tokenId = new JSONObject(token);
+            //Getting the id string from the JSONObject and assigning it to the String id
+            id = tokenId.getJSONObject("access").getJSONObject("token").getJSONObject("tenant").getString("id").toString();
+            Log.i("TAG", "Tenat ID  " + id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    /**
+     * Methods to handle response code from the server
+     * Respone code 200 means everything went OK
+     * If response code does not equals 200 the login activity cannot call the menu activity.
+     */
     public static void setResponseCode(String response){
         responseCode = response;
     }
@@ -119,4 +147,5 @@ public class HttpManager {
     public static String getResponseCode(){
         return responseCode;
     }
+
 }
